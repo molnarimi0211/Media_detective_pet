@@ -129,7 +129,7 @@ const Media = () => {
         console.log("Words to send to backend:", wordsToSend);
 
   
-        const backendUrl = 'http://localhost:3000/api/generate'; 
+        const backendUrl = 'http://localhost:3001/api/generate'; 
 
         try {
             const response = await fetch(backendUrl, {
