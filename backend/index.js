@@ -7,7 +7,12 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3001
+
+//healthcheck endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 
 app.get('/api/countries', async (req, res) => {
@@ -32,6 +37,6 @@ app.post('/api/generate', (req, res) => {
   res.status(200).json({ message: 'Data recieved successfully' });
 })
 
-app.listen(PORT, () => {
-  console.log(`Proxy server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Proxy server running on http://0.0.0.0:${PORT}`);
 });

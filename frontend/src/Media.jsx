@@ -48,7 +48,7 @@ const DraggableWord = ({ word, id, onDropIntoTarget }) => {
 
 // Drop Target Component
 const DropTargetArea = ({ droppedWords }) => {
-    const [{ isOver }, drop] = useDrop(() => ({ // Corrected: useDrop
+    const [{ isOver }, drop] = useDrop(() => ({ 
         accept: ItemTypes.WORD,
         drop: (item) => ({ name: 'DropTargetArea' }),
         collect: (monitor) => ({
@@ -129,11 +129,11 @@ const Media = () => {
         console.log("Words to send to backend:", wordsToSend);
 
   
-        const backendUrl = 'http://localhost:3001/api/generate'; 
+        const backendUrl = '/api/generate'; 
 
         try {
             const response = await fetch(backendUrl, {
-                method: 'POST', // POST kérés
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', 
                 },
@@ -149,7 +149,6 @@ const Media = () => {
             console.log('Backend response:', data);
             alert(`Backend response: ${data.message}`);
             
-            // Clearing up drop zone and A sikeres küldés után tisztíthatod a drop zónát és visszateheted a szavakat az eredeti listába
             setDroppedWords([]);
             setAvailableWords((prev) => [...prev, ...droppedWords]); 
 

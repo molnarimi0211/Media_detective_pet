@@ -17,7 +17,7 @@ export default function Home() {
   ]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/api/countries')
+    fetch('/api/countries')
       .then(res => {
         if (!res.ok) throw new Error('Network error');
         return res.json();
@@ -36,7 +36,7 @@ export default function Home() {
 
   const handleStart = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/form', {
+      const response = await fetch('/api/form', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
