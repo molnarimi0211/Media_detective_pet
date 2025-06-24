@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Media from './Media.jsx';
 import Home from './Home.jsx';
+import Generated from './Generated.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const router = createBrowserRouter([
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: '/media',
     element:  <Media />
+  },
+  {
+    path: '/generated',
+    element: <Generated />
   }
 ])
 
