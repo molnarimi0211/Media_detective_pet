@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 // Import Bootstrap components
 import { Container, Row, Col, Button } from 'react-bootstrap';
+
 
 // Define item types for drag and drop
 const ItemTypes = {
@@ -96,6 +98,9 @@ const DropTargetArea = ({ droppedWords }) => {
 
 // Main Media Component
 const Media = () => {
+
+    const navigate = useNavigate();
+
     const [availableWords, setAvailableWords] = useState([
         { id: '1', word: 'apple' },
         { id: '2', word: 'banana' },
@@ -120,43 +125,41 @@ const Media = () => {
     };
 
     const handleGenerate = async () => {
-        if (droppedWords.length === 0) {
-            alert("Please drag some words into the target area before generating.");
-            return;
+    if (droppedWords.length === 0) {
+        alert("Please drag some words into the target area before generating.");
+        return;
+    }
+
+    const wordsToSend = droppedWords.map(wordObj => wordObj.word);
+    const backendUrl = '/api/generate';
+
+    try {
+        const response = await fetch(backendUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ prompt: wordsToSend.join(', ') }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error from backend'}`);
         }
 
-        const wordsToSend = droppedWords.map(wordObj => wordObj.word);
-        console.log("Words to send to backend:", wordsToSend);
+        const data = await response.json();
 
-  
-        const backendUrl = '/api/generate'; 
+        localStorage.setItem('generatedImage', data.imageBase64);
+        navigate('/generated');
 
-        try {
-            const response = await fetch(backendUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', 
-                },
-                body: JSON.stringify({ words: wordsToSend }),
-            });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error from backend'}`);
-            }
 
-            const data = await response.json();
-            console.log('Backend response:', data);
-            alert(`Backend response: ${data.message}`);
-            
-            setDroppedWords([]);
-            setAvailableWords((prev) => [...prev, ...droppedWords]); 
+    } catch (error) {
+        console.error('Error sending words to backend:', error);
+        alert(`Couldn't send words to backend: ${error.message}`);
+    }
+};
 
-        } catch (error) {
-            console.error('Error sending words to backend:', error);
-            alert(`Couldn't send words to backend: ${error.message}}`);
-        }
-    };
 
     return (
         <DndProvider backend={HTML5Backend}>
