@@ -1,21 +1,22 @@
-// backend/server.js (or whatever your backend entry file is)
 import dotenv from 'dotenv';
 import express from 'express';
-import fetch from 'node-fetch'; // Make sure you have node-fetch installed: npm install node-fetch
+import fetch from 'node-fetch';
 import cors from 'cors';
 import OpenAI from 'openai';
-import fs from "fs";
+// import fs from "fs";
+// import path from 'path';
+// import { fileURLToPath } from 'url';
+
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
-// Ensure this port is different from your React app's development port (default 5173 for Vite)
 const PORT = process.env.PORT || 3001;
 const openai = new OpenAI();
 
 
-
-//const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Middleware
 app.use(cors()); // Allows your frontend to make requests to this backend
@@ -23,29 +24,39 @@ app.use(express.json()); // Parses incoming JSON requests
 
 // Routes
 app.post('/api/generate', async (req, res) => {
-    const prompt = `A glass bowl with the following fruits: ${req.body.prompt}`;
-    //const prompt = req.body.prompt;
-    console.log('Received prompt:', prompt);
+  const { words } = req.body;
+  if (!Array.isArray(words) || words.length === 0) {
+    return res
+      .status(400)
+      .json({ message: 'Please provide an array of words in the body.' });
+  }
+
+  const prompt = `A glass bowl with the following fruits: ${words.join(', ')}, make it look realistic`;
+  console.log('Full prompt:', prompt);
+
 
     if (!prompt) {
         return res.status(400).json({ message: 'Prompt is missing in request body.' });
     }
 
     try {
+      
         const response = await openai.images.generate({
-            model: "dall-e-2", // DALL·E 2 támogatja a base64 kimenetet
+            model: "dall-e-2", 
             prompt,
             n: 1,
             size: "512x512",
-            response_format: "b64_json", // FONTOS!
+            response_format: "b64_json",
         });
-
+      
         const image_base64 = response.data[0].b64_json;
+      
+       // const imgPath = path.join(__dirname, 'static', 'test.png');
+       // const image_base64 = fs.readFileSync(imgPath, { encoding: 'base64' });
         if (!image_base64) {
             throw new Error("Image generation did not return base64 data.");
         }
 
-        // Visszaküldjük base64-ként
         res.json({ imageBase64: image_base64 });
         console.log("Generated and sent base64 image.");
 

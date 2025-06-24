@@ -102,14 +102,14 @@ const Media = () => {
     const navigate = useNavigate();
 
     const [availableWords, setAvailableWords] = useState([
-        { id: '1', word: 'apple' },
-        { id: '2', word: 'banana' },
-        { id: '3', word: 'orange' },
-        { id: '4', word: 'grape' },
+        { id: '1', word: 'carrot' },
+        { id: '2', word: 'pineapple' },
+        { id: '3', word: 'mandarin' },
+        { id: '4', word: 'olive oil' },
         { id: '5', word: 'kiwi' },
         { id: '6', word: 'peach' },
-        { id: '7', word: 'mango' },
-        { id: '8', word: 'strawberry' },
+        { id: '7', word: 'watermelon' },
+        { id: '8', word: 'cherry' },
     ]);
 
     const [droppedWords, setDroppedWords] = useState([]);
@@ -139,7 +139,7 @@ const Media = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ prompt: wordsToSend.join(', ') }),
+            body: JSON.stringify({ words: wordsToSend })
         });
 
         if (!response.ok) {
@@ -148,6 +148,8 @@ const Media = () => {
         }
 
         const data = await response.json();
+        console.log('Received data:', data);
+
 
         localStorage.setItem('generatedImage', data.imageBase64);
         navigate('/generated');
