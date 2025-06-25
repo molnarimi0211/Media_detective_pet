@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-
-// Import Bootstrap components
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
 
@@ -133,7 +131,6 @@ const Media = () => {
         const wordsToSend = droppedWords.map(wordObj => wordObj.word);
         const backendUrl = '/api/generate';
 
-        // Step 1: Navigate right away
         navigate('/generated');
 
         try {

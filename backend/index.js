@@ -15,8 +15,8 @@ const openai = new OpenAI();
 
 
 // Middleware
-app.use(cors()); // Allows your frontend to make requests to this backend
-app.use(express.json()); // Parses incoming JSON requests
+app.use(cors()); // Allows frontend to make requests to this backend
+app.use(express.json());
 
 // Routes
 app.post('/api/generate', async (req, res) => {
@@ -68,7 +68,6 @@ app.get('/api/health', (req, res) => {
     res.status(200).send('OK');
 });
 
-// Example: Countries API (if you decide to use it)
 app.get('/api/countries', async (req, res) => {
     try {
         const response = await fetch('https://www.apicountries.com/countries');
@@ -83,7 +82,7 @@ app.get('/api/countries', async (req, res) => {
     }
 });
 
-// Example: Form submission
+
 app.post('/api/form', (req, res) => {
     const formData = req.body;
     console.log("Received form data: ", formData);
@@ -92,6 +91,6 @@ app.post('/api/form', (req, res) => {
 
 
 // Start the server
-app.listen(PORT, '0.0.0.0', () => { // 0.0.0.0 makes it accessible from network, localhost is also fine
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Backend server running on http://localhost:${PORT}`);
 });

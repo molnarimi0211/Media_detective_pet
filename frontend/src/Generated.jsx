@@ -29,7 +29,7 @@ const Generated = () => {
     }, []);
 
     useEffect(() => {
-        // Stop loading once both image and delay are done
+        // Stops loading once both image and delay are done
         if (minDelayDone && imageBase64) {
             setIsLoading(false);
             localStorage.removeItem('generatedImage');
