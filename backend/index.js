@@ -3,12 +3,8 @@ import express from 'express';
 import fetch from 'node-fetch';
 import cors from 'cors';
 import OpenAI from 'openai';
-// import fs from "fs";
-// import path from 'path';
-// import { fileURLToPath } from 'url';
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -31,7 +27,7 @@ app.post('/api/generate', async (req, res) => {
       .json({ message: 'Please provide an array of words in the body.' });
   }
 
-  const prompt = `A glass bowl with the following fruits: ${words.join(', ')}, make it look realistic`;
+  const prompt = `A wooden bowl with the following fruits: ${words.join(', ')}. Make it look realistic`;
   console.log('Full prompt:', prompt);
 
 
@@ -42,17 +38,16 @@ app.post('/api/generate', async (req, res) => {
     try {
       
         const response = await openai.images.generate({
-            model: "dall-e-2", 
+            model: "dall-e-3",
             prompt,
             n: 1,
-            size: "512x512",
+            size: "1024x1024",
             response_format: "b64_json",
         });
       
         const image_base64 = response.data[0].b64_json;
       
-       // const imgPath = path.join(__dirname, 'static', 'test.png');
-       // const image_base64 = fs.readFileSync(imgPath, { encoding: 'base64' });
+
         if (!image_base64) {
             throw new Error("Image generation did not return base64 data.");
         }

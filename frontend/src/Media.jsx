@@ -102,14 +102,14 @@ const Media = () => {
     const navigate = useNavigate();
 
     const [availableWords, setAvailableWords] = useState([
-        { id: '1', word: 'carrot' },
-        { id: '2', word: 'pineapple' },
-        { id: '3', word: 'mandarin' },
-        { id: '4', word: 'olive oil' },
-        { id: '5', word: 'kiwi' },
-        { id: '6', word: 'peach' },
-        { id: '7', word: 'watermelon' },
-        { id: '8', word: 'cherry' },
+        { id: '1', word: 'Leeche' },
+        { id: '2', word: 'Melon' },
+        { id: '3', word: 'Orange' },
+        { id: '4', word: 'Banana' },
+        { id: '5', word: 'Kiwi' },
+        { id: '6', word: 'Tomatoe' },
+        { id: '7', word: 'Watermelon' },
+        { id: '8', word: 'Apple' },
     ]);
 
     const [droppedWords, setDroppedWords] = useState([]);
@@ -125,42 +125,41 @@ const Media = () => {
     };
 
     const handleGenerate = async () => {
-    if (droppedWords.length === 0) {
-        alert("Please drag some words into the target area before generating.");
-        return;
-    }
-
-    const wordsToSend = droppedWords.map(wordObj => wordObj.word);
-    const backendUrl = '/api/generate';
-
-    try {
-        const response = await fetch(backendUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ words: wordsToSend })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error from backend'}`);
+        if (droppedWords.length === 0) {
+            alert("Please drag some words into the target area before generating.");
+            return;
         }
 
-        const data = await response.json();
-        console.log('Received data:', data);
+        const wordsToSend = droppedWords.map(wordObj => wordObj.word);
+        const backendUrl = '/api/generate';
 
-
-        localStorage.setItem('generatedImage', data.imageBase64);
+        // Step 1: Navigate right away
         navigate('/generated');
 
+        try {
+            const response = await fetch(backendUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ words: wordsToSend })
+            });
 
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error from backend'}`);
+            }
 
-    } catch (error) {
-        console.error('Error sending words to backend:', error);
-        alert(`Couldn't send words to backend: ${error.message}`);
-    }
-};
+            const data = await response.json();
+            console.log('Received data:', data);
+
+            localStorage.setItem('generatedImage', data.imageBase64);
+
+        } catch (error) {
+            console.error('Error sending words to backend:', error);
+            localStorage.removeItem('generatedImage');
+            alert(`Couldn't generate image: ${error.message}`);
+        }
+    };
+
 
 
     return (
