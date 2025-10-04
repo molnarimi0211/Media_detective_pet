@@ -1,5 +1,5 @@
-version: '3.8'
-
+networks:
+  mdnetwork:
 services:
   backend1:
     build:
@@ -12,6 +12,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - mdnetwork
 
   backend2:
     build:
@@ -19,6 +21,13 @@ services:
     container_name: backend2
     expose:
       - 3001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mdnetwork
 
   nginx:
     image: nginx:alpine
@@ -31,3 +40,7 @@ services:
     depends_on:
       - backend1
       - backend2
+    networks:
+      - mdnetwork
+
+  
