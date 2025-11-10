@@ -92,7 +92,7 @@ export default function Media() {
     { id: '11', word: 'party' },
     { id: '12', word: 'meet' },
     { id: '13', word: 'play poker' },
-    { id: '14', word: 'had diner' },
+    { id: '14', word: 'had dinner' },
     { id: '15', word: 'watched TV' },
   ]);
 
@@ -246,3 +246,4 @@ export default function Media() {
     </DndProvider>
   );
 }
+
