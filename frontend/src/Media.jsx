@@ -27,9 +27,8 @@ const DraggableWord = ({ word, id, category, onDropIntoTarget }) => {
   return (
     <div
       ref={drag}
-      className={`bg-info-subtle rounded-pill px-4 py-2 m-2 shadow-sm d-inline-block cursor-grab ${
-        isDragging ? 'opacity-50' : ''
-      }`}
+      className={`bg-info-subtle rounded-pill px-4 py-2 m-2 shadow-sm d-inline-block cursor-grab ${isDragging ? 'opacity-50' : ''
+        }`}
       style={{ border: '1px solid rgb(63, 184, 145)' }}
     >
       {word}
@@ -49,9 +48,8 @@ const DropTargetArea = ({ droppedWords }) => {
   return (
     <div
       ref={drop}
-      className={`border border-dashed border-2 rounded p-4 d-flex flex-wrap min-vh-50 ${
-        isOver ? 'bg-primary-subtle border-primary' : 'bg-light border-secondary'
-      }`}
+      className={`border border-dashed border-2 rounded p-4 d-flex flex-wrap min-vh-50 ${isOver ? 'bg-primary-subtle border-primary' : 'bg-light border-secondary'
+        }`}
     >
       {droppedWords.length === 0 ? (
         <p className="text-muted fs-5 w-100 text-center mt-4">Drag words here</p>
@@ -73,27 +71,27 @@ const DropTargetArea = ({ droppedWords }) => {
 export default function Media() {
   const navigate = useNavigate();
 
-  // 🟩 Separate each category into its own state
+  //Separate each category into its own state
   const [whoWords, setWhoWords] = useState([
-    { id: '1', word: 'Frankenstein' },
-    { id: '2', word: 'Cleopatra' },
-    { id: '3', word: 'Pinocchio' },
+    { id: '0', word: 'Frankenstein', category: 'who' },
+    { id: '1', word: 'Cleopatra', category: 'who' },
+    { id: '2', word: 'Dracula', category: 'who' },
   ]);
 
   const [withWhomWords, setWithWhomWords] = useState([
-    { id: '6', word: 'Shrek' },
-    { id: '7', word: 'dwarves' },
-    { id: '8', word: 'aliens' },
-    { id: '9', word: 'unicorns' },
-    { id: '10', word: 'capybaras' },
+    { id: '3', word: 'Shrek', category: 'withWhom' },
+    { id: '4', word: 'dwarves', category: 'withWhom' },
+    { id: '5', word: 'aliens', category: 'withWhom' },
+    { id: '6', word: 'unicorns', category: 'withWhom' },
+    { id: '7', word: 'capybaras', category: 'withWhom' },
   ]);
 
   const [didWords, setDidWords] = useState([
-    { id: '11', word: 'party' },
-    { id: '12', word: 'meet' },
-    { id: '13', word: 'play poker' },
-    { id: '14', word: 'had dinner' },
-    { id: '15', word: 'watched TV' },
+    { id: '8', word: 'danced', category: 'did' },
+    { id: '9', word: 'met', category: 'did' },
+    { id: '10', word: 'played poker', category: 'did' },
+    { id: '11', word: 'had dinner', category: 'did' },
+    { id: '12', word: 'watched TV', category: 'did' },
   ]);
 
   const [droppedWords, setDroppedWords] = useState([]);
@@ -117,20 +115,20 @@ export default function Media() {
 
     const wordToMove = sourceList.find((w) => w.id === wordId);
     if (wordToMove && !droppedWords.some((w) => w.id === wordId)) {
-      setDroppedWords((prev) => [...prev, wordToMove]);
+      setDroppedWords((prev) => [...prev, { ...wordToMove, category }]);
       sourceSetter((prev) => prev.filter((w) => w.id !== wordId));
     }
   };
 
-  // 🟨 Refresh only resets dropped words (doesn't merge categories)
+  //Refresh only resets dropped words (doesn't merge categories)
   const handleRefreshWords = () => {
     // restore each dropped word back to its category
     droppedWords.forEach((word) => {
-      if (whoWords.every((w) => w.id !== word.id) && ['1', '2', '3', '4', '5'].includes(word.id)) {
+      if (whoWords.every((w) => w.category === word.category)) {
         setWhoWords((prev) => [...prev, word]);
-      } else if (withWhomWords.every((w) => w.id !== word.id) && ['6', '7', '8', '9', '10'].includes(word.id)) {
+      } else if (withWhomWords.every((w) => w.category === word.category)) {
         setWithWhomWords((prev) => [...prev, word]);
-      } else if (didWords.every((w) => w.id !== word.id) && ['11', '12', '13', '14', '15'].includes(word.id)) {
+      } else if (didWords.every((w) => w.category === word.category)) {
         setDidWords((prev) => [...prev, word]);
       }
     });
@@ -143,6 +141,39 @@ export default function Media() {
       return;
     }
 
+
+    let whoCategory = '';
+    let didCategory = '';
+    let withCategory = '';
+
+    droppedWords.forEach((word) => {
+      if (word.category === 'who') {
+        whoCategory += `${word.word}, `;
+      } else if (word.category === 'did') {
+        didCategory += word.word;
+      } else if (word.category === 'withWhom') {
+        withCategory += `${word.word}, `;
+      }
+    });
+
+    const categories = droppedWords.reduce((acc, word) => {
+      acc[word.category] = (acc[word.category] || 0) + 1;
+      return acc;
+    }, {});
+
+    if (categories.who !== 1 || categories.did !== 1 || categories.withWhom !== 1) {
+      alert('Please select exactly one word from each category.');
+      return;
+    }
+
+    const sentence = `${whoCategory} ${didCategory} with ${withCategory}.`;
+    console.log('Generated sentence:', sentence);
+
+    if (!whoCategory || !didCategory || !withCategory) {
+      alert('Please ensure you have selected words from all categories.');
+      return;
+    }
+
     navigate('/generated');
 
     try {
@@ -150,17 +181,28 @@ export default function Media() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          words: droppedWords.map((w) => w.word),
+          sentence: sentence,
           media: selectedMedia,
         }),
       });
 
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.details || 'Unknown error');
+      }
+
       localStorage.setItem('generatedImage', data.imageBase64);
+      navigate('/generated');
     } catch (err) {
-      console.error('Failed to generate:', err);
+      console.error('Failed to generate:', err.message);
       localStorage.removeItem('generatedImage');
-      alert("Couldn't generate image");
+
+      if (err.message.includes('safety system')) {
+        alert("Your prompt was rejected by OpenAI's safety system. Try rephrasing.");
+      } else {
+        alert("Couldn't generate image. Please try again.");
+      }
     }
   };
 
@@ -182,6 +224,19 @@ export default function Media() {
           </div>
 
           <div className="word-row">
+            <h5>Did?</h5>
+            {didWords.map((word) => (
+              <DraggableWord
+                key={word.id}
+                id={word.id}
+                word={word.word}
+                category="did"
+                onDropIntoTarget={handleDropIntoTarget}
+              />
+            ))}
+          </div>
+
+          <div className="word-row">
             <h5>With Whom?</h5>
             {withWhomWords.map((word) => (
               <DraggableWord
@@ -194,18 +249,7 @@ export default function Media() {
             ))}
           </div>
 
-          <div className="word-row">
-            <h5>Did?</h5>
-            {didWords.map((word) => (
-              <DraggableWord
-                key={word.id}
-                id={word.id}
-                word={word.word}
-                category="did"
-                onDropIntoTarget={handleDropIntoTarget}
-              />
-            ))}
-          </div>
+
         </div>
 
         <div className="drop-target-wrapper">
@@ -246,4 +290,3 @@ export default function Media() {
     </DndProvider>
   );
 }
-

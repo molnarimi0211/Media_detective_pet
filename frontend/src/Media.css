@@ -46,7 +46,6 @@
 }
 
 
-/* Drop Target - right side */
 .drop-target-wrapper {
   flex: 1;
   max-width: 50%;
@@ -59,7 +58,6 @@
   justify-content: flex-start;
 }
 
-/* Responsive layout */
 @media (max-width: 992px) {
   .media-container {
     flex-direction: column;
@@ -72,3 +70,4 @@
     width: 100%;
   }
 }
+
