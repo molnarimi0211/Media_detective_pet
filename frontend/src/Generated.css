@@ -1,0 +1,39 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  justify-content: center;
+  min-height: 100vh;  /* Take full height of the viewport */
+  padding: 1rem;      /* Add some padding */
+  box-sizing: border-box; /* Ensure padding is included in height/width */
+}
+
+img {
+  max-width: 100%;    /* Make the image responsive */
+  height: auto;       /* Maintain aspect ratio */
+  border-radius: 1rem; /* Rounded corners */
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically on smaller screens */
+  align-items: center; /* Center buttons */
+  margin-top: 1rem;
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media (min-width: 576px) {
+  .button-container {
+    flex-direction: row; /* Align buttons horizontally on larger screens */
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 1.5rem; /* Adjust heading size for mobile devices */
+  }
+
+  p {
+    font-size: 0.9rem; /* Smaller paragraph size for mobile */
+  }
+}

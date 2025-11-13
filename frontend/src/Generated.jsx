@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Spinner } from 'react-bootstrap';
+import './Generated.css';
 
 const Generated = () => {
     const navigate = useNavigate();
@@ -9,12 +10,10 @@ const Generated = () => {
     const [minDelayDone, setMinDelayDone] = useState(false);
 
     useEffect(() => {
-        // Minimum loading duration
         const delayTimer = setTimeout(() => {
             setMinDelayDone(true);
         }, 3000);
 
-        // Poll for image
         const pollTimer = setInterval(() => {
             const img = localStorage.getItem('generatedImage');
             if (img) {
@@ -29,7 +28,6 @@ const Generated = () => {
     }, []);
 
     useEffect(() => {
-        // Stops loading once both image and delay are done
         if (minDelayDone && imageBase64) {
             setIsLoading(false);
             localStorage.removeItem('generatedImage');
@@ -37,7 +35,7 @@ const Generated = () => {
     }, [minDelayDone, imageBase64]);
 
     return (
-        <Container className="text-center py-5">
+        <Container className="text-center py-5 container">
             <h1>Generated Image</h1>
 
             {isLoading ? (
@@ -49,13 +47,12 @@ const Generated = () => {
                 <img
                     src={`data:image/png;base64,${imageBase64}`}
                     alt="Generated"
-                    style={{ maxWidth: '100%', height: 'auto', borderRadius: '1rem', marginTop: '1rem' }}
                 />
             ) : (
                 <p>No image found. Please generate one first.</p>
             )}
 
-            <div className="mt-4 d-flex justify-content-center gap-3">
+            <div className="button-container">
                 <Button onClick={() => navigate('/media')}>Generate Another</Button>
                 <Button variant="secondary" onClick={() => navigate('/')}>Go Home</Button>
             </div>
