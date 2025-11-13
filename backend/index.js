@@ -20,15 +20,15 @@ app.use(express.json());
 
 // Routes
 app.post('/api/generate', async (req, res) => {
-  const { words } = req.body;
-  if (!Array.isArray(words) || words.length === 0) {
+  const { sentence, media } = req.body;
+ if (!sentence || typeof sentence !== 'string') { 
     return res
       .status(400)
       .json({ message: 'Please provide an array of words in the body.' });
   }
 
-  const prompt = `A wooden bowl with the following fruits: ${words.join(', ')}. Make it look realistic`;
-  console.log('Full prompt:', prompt);
+const prompt = `${sentence}Make it look realistic like as if it was a ${media} post.`;
+console.log('Full prompt:', prompt);
 
 
     if (!prompt) {
